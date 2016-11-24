@@ -19,7 +19,10 @@
     "vaadin-grid": "^1.2.0",
     "paper-tooltip": "PolymerElements/paper-tooltip#^1.1.3",
     "paper-dialog": "PolymerElements/paper-dialog#^1.1.0",
-    "paper-button": "PolymerElements/paper-button#^1.0.14"
+    "paper-button": "PolymerElements/paper-button#^1.0.14",
+    "paper-input": "PolymerElements/paper-input#^1.1.22",
+    "vaadin-combo-box": "^1.1.5",
+    "neon-animation": "^1.2.4"
   },
   "devDependencies": {
     "web-component-tester": "^4.0.0"

@@ -12,7 +12,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <link rel="import" href="../bower_components/vaadin-grid/vaadin-grid.html">
 <link rel="import" href="../bower_components/paper-icon-button/paper-icon-button.html">
 <link rel="import" href="../bower_components/paper-tooltip/paper-tooltip.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animation.html">
 <link rel="import" href="../bower_components/paper-dialog/paper-dialog.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/vaadin-combo-box/vaadin-combo-box.html">
+
 
 <link rel="import" href="shared-styles.html">
 
@@ -24,51 +29,89 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
         padding: 10px;
       }
+     paper-button {
+	 background-color: #4285f4;
+	 color: white;
+     }
     </style>
 
     <paper-dialog id="newcoldlg" entry-animation="scale-up-animation"
-		  exit-animation="fade-out-animation" modal >
-	<h2>Dialog Title</h2>
-	<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-	    irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</p>
+		  exit-animation="fade-out-animation" >
+	<h2>Add property</h2>
+	<p>
+	    <paper-input autofocus label="Property name" value="{{propertyName::input}}" ></paper-input>
+	    <paper-input label="Allowed values" value="{{allowedValues::input}}"></paper-input>
+	</p>
 	<div class="buttons">
-	    <paper-button>More Info...</paper-button>
-	    <paper-button dialog-dismiss>Decline</paper-button>
-	    <paper-button dialog-confirm autofocus>Accept</paper-button>
+	    <paper-button dialog-dismiss>Cancel</paper-button>
+	    <paper-button dialog-confirm on-tap="acceptnewcol" >Accept</paper-button>
 	</div>
     </paper-dialog>
 
     <div class="card">
 	<div>
-	    <paper-icon-button id="addcol" on-tap="add_col" icon="menu"</paper-icon-button>
+	    <paper-icon-button id="addcol" on-tap="add_col" icon="add-circle"</paper-icon-button>
 	    <paper-tooltip for="addcol">Add new column</paper-tooltip>
 	</div>
 	<vaadin-grid id="dmngrid">
 	    <table>
-		<tbody>
-		    <tr>
-			<td>One</td>
-			<td>Two</td>
-		    </tr>
-		</tbody>
 	    </table>
 	</vaadin-grid>
+	<div>
+	    <paper-icon-button id="addrow" on-tap="add_row" icon="add-circle"</paper-icon-button>
+	    <paper-tooltip for="addrow">Add new column</paper-tooltip>
+	</div>
+
     </div>
   </template>
-
   <script>
-    Polymer({
-	is: 'my-view1',
-	properties: {
-	    grid: {
-		type: Object
-	    }
-	},
-	add_col: function(){
-	this.$.newcoldlg.open();
-	this.grid = this.$.dmngrid;
-	    this.grid.addColumn({name: 'cobraColumn'});
-	}
+   Polymer({
+       is: 'my-view1',
+       properties: {
+	   propertyName: {
+	       type: String
+	   },
+	   allowedValues: {
+	       type: String
+	   },
+	   grid: {
+	       type: Object
+	   },
+	   columns: {
+	       type: Array,
+	       value: []
+	   },
+	   current_column: {
+	       type: Number
+	   },
+	   rows: {
+	       type: Array,
+	       value: []
+	   }
+       },
+       acceptnewcol: function(){
+	   var grid = this.$.dmngrid;
+	   grid.addColumn({name: this.propertyName});
+	   this.columns.push({name: this.propertyName,
+			      index: this.current_column,
+	                      allowedValues: this.allowedValues }
+	   ),
+	   this.propertyName=null;
+	   this.allowedValues =null;
+       },
+       add_row: function(){
+	   var grid = this.$.dmngrid;
+	   var row = {};
+	   for (col in this.columns ) {
+	       row[col["name"]] = "";
+	   }
+	   this.rows.push(row);
+	   grid.items = this.rows;
+	   grid.size = this.rows.length;
+       },
+       add_col: function(){
+	   this.$.newcoldlg.open();
+       }
     });
   </script>
 </dom-module>
